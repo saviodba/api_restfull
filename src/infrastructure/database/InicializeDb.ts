@@ -28,10 +28,14 @@ export class InitializeDB {
   private async importData() {
     await this.delete();
       fs.readFile(this._filePath, "utf8", (err, data) => {
-        if (err) {          
-          return;
+        if (err) { 
+          console.error(err)         
+          throw new Error(".csv file data not found, check path in .env file")          
         }
       
+        if(!data){
+          throw new Error(".csv file data not found, check path in .env file")
+        }
         const lines = data.split("\n").map((line) => line.split(";"));   
             
         lines.slice(1).map((line) => {

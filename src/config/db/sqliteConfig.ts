@@ -1,6 +1,11 @@
+import path from 'path';
 import sqlite3, { Database } from 'sqlite3';
 
-const dbPath: string = String( process.env.FILE_DB_PATH );
+const dbName = "movies.db";
+const currentDir = __dirname;
+const rootDir = path.resolve(currentDir,'../../../')
+const dbPath: string = path.join(rootDir,'/db/', dbName)
+
 
 export const db: Database = new sqlite3.Database(dbPath, (err: Error | null) => {
   if (err) {

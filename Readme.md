@@ -17,13 +17,10 @@ Antes de executar a aplicação, é necessário configurar o arquivo `.env` na p
 
 PORT=3000
 FILE_PATH="./files/Movielist.csv"
-FILE_DB_PATH="./db/movies.db"
 
 ***PORT:*** Define a porta em que a aplicação será executada. O valor padrão é 3000, mas pode ser alterado para qualquer outra porta disponível.
 
 ***FILE_PATH:*** Caminho para o arquivo CSV contendo a lista de filmes. Este arquivo deve ser nomeado como Movielist.csv e estar presente na pasta indicada.
-
-***FILE_DB_PATH:*** Caminho onde o banco de dados SQLite será criado. O sistema criará automaticamente o banco de dados nesta pasta, se necessário.
 
 
 ### Passos para Instalação
@@ -47,5 +44,5 @@ A aplicação estará acessível na URL http://localhost:3000, com a documentaç
 ### Testes
 Para executar os testes de integração, execute o seguinte comando:
 
-npm run test
+**npm run test**
 O projeto já inclui um mock na pasta src/infrastructure/database para facilitar os testes.
