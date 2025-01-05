@@ -15,7 +15,6 @@ Este sistema utiliza uma API em Express para gerenciar filmes armazenados em um 
 
 Antes de executar a aplicação, é necessário configurar o arquivo `.env` na pasta raiz da aplicação com as seguintes variáveis de ambiente:
 
-```bash
 PORT=3000
 FILE_PATH="./files/Movielist.csv"
 FILE_DB_PATH="./db/movies.db"
