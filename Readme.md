@@ -1,4 +1,4 @@
-# Sistema de Gerenciamento de Filmes
+# API RESTful leitura da lista de indicados e vencedores da categoria Pior Filme do Golden Raspberry Awards
 
 Este sistema utiliza uma API em Express para gerenciar filmes armazenados em um banco de dados SQLite. A aplicação permite importar um arquivo CSV com uma lista de filmes e fornece uma documentação interativa via Swagger.
 
