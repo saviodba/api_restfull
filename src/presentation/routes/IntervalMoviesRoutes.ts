@@ -6,7 +6,7 @@ export const router = Router()
 const readFile = new ReadfileControllers();
 
 
-router.get("/movies", async (req, res) => {
+router.get("/interval-movies", async (req, res) => {
   
   try {
     const returnMovies =  await readFile.getMovieInterval()

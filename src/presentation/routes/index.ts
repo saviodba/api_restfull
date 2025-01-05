@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { router } from "./ReadFilesRoutes";
+import { router } from "./IntervalMoviesRoutes";
 
 export const allRoutes = Router();
 

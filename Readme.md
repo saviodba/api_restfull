@@ -15,8 +15,10 @@ Este sistema utiliza uma API em Express para gerenciar filmes armazenados em um 
 
 Antes de executar a aplicação, é necessário configurar o arquivo `.env` na pasta raiz da aplicação com as seguintes variáveis de ambiente:
 
-PORT=3000
-FILE_PATH="./files/Movielist.csv"
+   PORT=3000
+   FILE_PATH="./files/Movielist.csv"
+
+Após a configuração das variáveis inclua o arquivo Movielist.csv na pasta raiz.
 
 ***PORT:*** Define a porta em que a aplicação será executada. O valor padrão é 3000, mas pode ser alterado para qualquer outra porta disponível.
 

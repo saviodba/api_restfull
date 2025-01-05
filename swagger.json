@@ -13,10 +13,10 @@
   ],   
 
   "paths": {   
-    "/movies": {
+    "/interval-movies": {
       "get": {   
-        "tags": ["Movies"],
-        "summary": "Get all movies",         
+        "tags": ["Interval Movies"],
+        "summary": "Get interval movies",         
         "description": "Obtem o produtor com maior intervalo entre dois prêmios consecutivos",
         "parameters": [],
         "responses": {
