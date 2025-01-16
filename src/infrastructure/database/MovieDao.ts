@@ -8,11 +8,31 @@ export class MovieDao implements IMovieRepositories {
 
   constructor() {}
 
-  async get(): Promise<Movie[]> {
+  async getListMovies(): Promise<Movie[]> {
+    try {
+      return new Promise((resolve, reject) => {
+        this.dbConfig.all(`SELECT * FROM movies `, (err:Error, rows:Movie[]) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          }
+          resolve(rows);
+        });
+      });
+
+    
+    
+} catch (error) {
+  console.error(error);
+  throw new Error("Error List data");
+}
+  }
+
+  async getInterval(): Promise<Movie[]> {
 
     try {
           return new Promise((resolve, reject) => {
-            this.dbConfig.all(`SELECT * FROM movies WHERE winner = 'yes' `, (err:Error, rows:Movie[]) => {
+            this.dbConfig.all(`SELECT * FROM movies `, (err:Error, rows:Movie[]) => {
               if (err) {
                 console.error(err);
                 reject(err);

@@ -18,3 +18,15 @@ router.get("/interval-movies", async (req, res) => {
 
 })
 
+router.get("/list-movies", async (req, res) => {
+  
+  try {
+    const returnMovies =  await readFile.getListMovies()
+    res.status(200).json(returnMovies)  
+  } catch (error:any) {
+    console.error(error.message)
+    res.status(400).json({error: "Error to get movies"})  
+  }
+
+})
+

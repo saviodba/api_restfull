@@ -3,105 +3,63 @@ import { IMovieRepositories } from "@/domain/interfaces/IMovieRepositories";
 
 export class GetMovieIntervalUseCase {
 
-  private minIntervalProducer : ProducerDTO | null = null;    
-  private maxIntervalProducer : ProducerDTO | null = null;  
-
-  constructor(private _movieRepositorie:IMovieRepositories) {}
+  constructor(private _movieRepositorie: IMovieRepositories) {}
 
   async execute(): Promise<AwardStatsDTO> {
-    const lstMoviesWinners = await this._movieRepositorie.get();
+    const lstMoviesWinners = await this._movieRepositorie.getInterval();
     
-    if(!lstMoviesWinners || lstMoviesWinners.length === 0){
+    if (!lstMoviesWinners || lstMoviesWinners.length === 0) {
       throw new Error("List data not found");
     }
-
-    const producers:ProducerYears[] = lstMoviesWinners.reduce((acc, movie) => {
-      let producerData = acc.find((producer)=> producer.producer === movie.producers);
-      
-      if(!producerData){
-        producerData = { producer: movie.producers, year: [] };
-        acc.push(producerData);
+ 
+    const producersMap = lstMoviesWinners.reduce((acc, movie) => {
+      const producer = movie.producers;
+      if (!acc.has(producer)) {
+        acc.set(producer, []);
       }
-      producerData.year.push(movie.year);  
+      acc.get(producer)?.push(movie.year);
       return acc;
-      }
-    , [] as ProducerYears[]
-    );
-      
+    }, new Map<string, number[]>());
 
-    const filteredProducers = producers.filter(producer => producer.year.length > 1);
+    const filteredProducers = Array.from(producersMap.entries())
+      .filter(([_, years]) => years.length > 1)
+      .map(([producer, years]) => ({
+        producer,
+        years: years.sort((a, b) => a - b),
+      }));
 
-    const listIntervalProducer = filteredProducers.map(producer =>{
-      const {producer:name, year} = producer
-      const sortYears = [...year].sort((a,b)=> a - b)
+    const intervals: ProducerDTO[] = [];
 
-      const intervals = sortYears.slice(1).map((yearValue, index)=>({
-        interval:yearValue  - sortYears[index],
-        previousWin:sortYears[index],
-        followingWin:yearValue
-      }))
-
-      return {
-        producer:name,
-        intervals:intervals
-      }
-    })
-    
-
-    const awartstatsDto: AwardStatsDTO = { min: [], max: [] };
-    this.minIntervalProducer = null;
-    this.maxIntervalProducer = null;
-
-
-    for (const producer of listIntervalProducer) {
-
-      const minIntervalData = producer.intervals.reduce((min, current)=>
-        current.interval < min.interval ? current : min
-      )
-
-      const maxIntervalData = producer.intervals.reduce((max, current)=>
-        current.interval > max.interval ? current : max
-      )
-      
-
-      if( !this.minIntervalProducer || 
-          minIntervalData.interval < this.minIntervalProducer.interval
-        ){  
-        
-          if(minIntervalData.interval === 0){
-            continue;
-          }
-
-        this.minIntervalProducer = {
+    for (const producer of filteredProducers) {
+      for (let i = 1; i < producer.years.length; i++) {
+        intervals.push({
           producer: producer.producer,
-          interval: minIntervalData.interval || 0,
-          previousWin: minIntervalData.previousWin,
-          followingWin: minIntervalData.followingWin
-        }
-        awartstatsDto.min = [this.minIntervalProducer]           
+          interval: producer.years[i] - producer.years[i - 1],
+          previousWin: producer.years[i - 1],
+          followingWin: producer.years[i]
+        });
+      }
     }
 
-    if( !this.maxIntervalProducer || 
-      maxIntervalData.interval > this.maxIntervalProducer.interval
-    ){      
-      this.maxIntervalProducer = {
-        producer:producer.producer,
-        interval: maxIntervalData.interval,
-        previousWin: maxIntervalData.previousWin,
-        followingWin: maxIntervalData.followingWin
-      } 
+    const minInterval = Math.min(...intervals.map(i => i.interval));
+    const maxInterval = Math.max(...intervals.map(i => i.interval));
 
-      awartstatsDto.max = [this.maxIntervalProducer ] 
-    }
+    const minWinners = intervals.filter(i => i.interval === minInterval);
+    const maxWinners = intervals.filter(i => i.interval === maxInterval);
+
     
-    }
-    
-    return awartstatsDto;
+    const minFiltered = minWinners.filter(min => 
+      !maxWinners.some(max => max.producer === min.producer)
+    );
+    const maxFiltered = maxWinners.filter(max => 
+      !minWinners.some(min => min.producer === max.producer)
+    );
+
+    const awardStats: AwardStatsDTO = {
+      min: minFiltered,
+      max: maxFiltered
+    };
+
+    return awardStats;
   }
-
-}
-
-type ProducerYears = {
-  producer:string;
-  year:number[];
 }

@@ -27,7 +27,7 @@ export class InitializeDB {
   
   private async importData() {
     await this.delete();
-      fs.readFile(this._filePath, "utf8", (err, data) => {
+      fs.readFile(this._filePath, "utf8", async (err, data) => {
         if (err) { 
           console.error(err)         
           throw new Error(".csv file data not found, check path in .env file")          
@@ -38,21 +38,18 @@ export class InitializeDB {
         }
         const lines = data.split("\n").map((line) => line.split(";"));   
             
-        lines.slice(1).map((line) => {
-          let obj : Movie;
-          
-      
-          obj = Movie.create({        
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i];
+          if (line.length < 4) continue;
+          const movie = Movie.create({
             title: line[1],
             studios: line[2],
-            year: Number(line[0]) ,
+            year: Number(line[0]),
             producers: line[3],
-            winner: line[4],
+            winner: line[4] || "",
           });
-          
-          this.insert(obj);
-                        
-        });
+          await this.insert(movie);
+        }
             
       });
         
